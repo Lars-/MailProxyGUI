@@ -1,0 +1,26 @@
+version: '3'
+services:
+  proxy:
+    build: ./proxy
+    volumes:
+      - ./templates:/etc/nginx/templates
+      - ./web:/var/www/html
+      - ${SSL_FOLDER}:/etc/nginx/ssl
+    environment:
+      - NGINX_ENVSUBST_OUTPUT_DIR=/etc/nginx/templates
+      - SSL_CERT_FILE=${SSL_CERT_FILE}
+      - SSL_KEY_FILE=${SSL_KEY_FILE}
+      - DOMAIN=${DOMAIN}
+    ports:
+      - "993:993"
+      - "995:995"
+      - "587:587"
+      - "80:80"
+      - "443:443"
+    links:
+      - php
+
+  php:
+    build: ./php
+    volumes:
+      - ./web:/var/www/html

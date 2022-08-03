@@ -1,0 +1,34 @@
+mail {
+    server_name ${DOMAIN};
+    auth_http   localhost/auth.php;
+
+    proxy_pass_error_message on;
+
+    proxy     on;
+    starttls  on;
+
+    ssl_certificate        /etc/nginx/ssl/${SSL_CERT_FILE};
+    ssl_certificate_key    /etc/nginx/ssl/${SSL_KEY_FILE};
+    ssl_protocols          TLSv1.2 TLSv1.3;
+    ssl_ciphers            ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384;
+
+    server {
+        listen          587;
+        protocol        smtp;
+        timeout         5s;
+        proxy           on;
+        xclient         off;
+        smtp_auth       plain;
+        proxy_smtp_auth on;
+    }
+
+    server {
+        listen    995;
+        protocol  pop3;
+    }
+
+    server {
+        listen   993;
+        protocol imap;
+    }
+}

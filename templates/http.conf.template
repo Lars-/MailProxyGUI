@@ -1,0 +1,53 @@
+http {
+    charset                utf-8;
+    sendfile               on;
+    tcp_nopush             on;
+    tcp_nodelay            on;
+    server_tokens          off;
+    log_not_found          off;
+    types_hash_max_size    2048;
+    types_hash_bucket_size 64;
+    client_max_body_size   16M;
+
+    # MIME
+    include                mime.types;
+    default_type           application/octet-stream;
+
+    # Logging
+    access_log             /var/log/nginx/access.log;
+    error_log              /var/log/nginx/error.log warn;
+
+    # SSL
+    ssl_session_timeout    1d;
+    ssl_session_cache      shared:SSL:10m;
+    ssl_session_tickets    off;
+
+    # Mozilla Intermediate configuration
+    ssl_protocols          TLSv1.2 TLSv1.3;
+    ssl_ciphers            ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384;
+
+    # OCSP Stapling
+    ssl_stapling           on;
+    ssl_stapling_verify    on;
+    resolver               1.1.1.1 1.0.0.1 [2606:4700:4700::1111] [2606:4700:4700::1001] 8.8.8.8 8.8.4.4 [2001:4860:4860::8888] [2001:4860:4860::8844] 208.67.222.222 208.67.220.220 [2620:119:35::35] [2620:119:53::53] 9.9.9.9 149.112.112.112 [2620:fe::fe] [2620:fe::9] 64.6.64.6 64.6.65.6 [2620:74:1b::1:1] [2620:74:1c::2:2] valid=60s;
+    resolver_timeout       2s;
+
+    server {
+        listen 80;
+        index index.php index.html;
+        server_name ${DOMAIN};
+        error_log  /var/log/nginx/error.log;
+        access_log /var/log/nginx/access.log;
+        root /var/www/html;
+
+        location ~ \.php$ {
+            try_files $uri =404;
+            fastcgi_split_path_info ^(.+\.php)(/.+)$;
+            fastcgi_pass php:9000;
+            fastcgi_index index.php;
+            include fastcgi_params;
+            fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+            fastcgi_param PATH_INFO $fastcgi_path_info;
+        }
+    }
+}
