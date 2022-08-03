@@ -1,4 +1,10 @@
 <?php
+
+use LJPc\MailProxyGui\Database;
+
+require __DIR__ . '/vendor/autoload.php';
+$db = new Database();
+
 $headers = getallheaders();
 
 $serverMap = [

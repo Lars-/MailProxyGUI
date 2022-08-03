@@ -3,3 +3,4 @@
 /ssl
 /templates/*.conf
 .env
+/web/data/db.sqlite
