@@ -26,15 +26,14 @@ $lm = new lazy_mofo( $dbh, 'en-us' );
 </head>
 <body>
 <?php echo file_get_contents( __DIR__ . '/instructions.html' ); ?>
-
-<h2>Domains</h2>
+<h2>Options</h2>
 <?php
-$lm->table            = 'domains';
-$lm->identity_name    = 'id';
-$lm->grid_delete_link = "";
-$lm->grid_add_link    = '';
+$lm->table              = 'options';
+$lm->identity_name      = 'id';
+$lm->grid_delete_link   = "";
+$lm->grid_add_link      = '';
 $lm->form_delete_button = '';
-$lm->grid_sql         = "select d.id,d.domain, s.name as 'server', d.id from domains d join servers s on s.id=d.server;";
+
 $lm->run();
 ?>
 </body>
