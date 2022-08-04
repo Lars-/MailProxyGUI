@@ -1,31 +1,62 @@
 mail {
-    server_name ${DOMAIN};
-    auth_http   localhost/auth.php;
+    server_name         ${DOMAIN};
+    auth_http           localhost/auth.php;
 
     proxy_pass_error_message on;
 
-    proxy     on;
-    starttls  on;
+    proxy               on;
+    starttls            on;
 
-    ssl_certificate        /etc/nginx/ssl/${SSL_CERT_FILE};
-    ssl_certificate_key    /etc/nginx/ssl/${SSL_KEY_FILE};
-    ssl_protocols          TLSv1 TLSv1.1 TLSv1.2 TLSv1.2 TLSv1.3;
-    ssl_ciphers            ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384;
+    ssl_certificate     /etc/nginx/ssl/${SSL_CERT_FILE};
+    ssl_certificate_key /etc/nginx/ssl/${SSL_KEY_FILE};
+    ssl_protocols       TLSv1 TLSv1.1 TLSv1.2 TLSv1.3;
+    ssl_ciphers         ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384;
+
+    imap_capabilities   IMAP4rev1 UIDPLUS IDLE LITERAL+ QUOTA;
+
+    pop3_auth           plain apop;
+    pop3_capabilities   LAST TOP USER PIPELINING UIDL;
+
+    smtp_auth           login plain;
+    smtp_capabilities   "SIZE 10485760" ENHANCEDSTATUSCODES 8BITMIME DSN;
+    xclient             off;
 
     server {
+        resolver        1.1.1.1 1.0.0.1 8.8.8.8 8.8.4.4;
         listen          587;
         protocol        smtp;
-        smtp_auth       plain;
         proxy_smtp_auth on;
     }
 
     server {
-        listen    995;
-        protocol  pop3;
+        resolver        1.1.1.1 1.0.0.1 8.8.8.8 8.8.4.4;
+        listen          995;
+        protocol        pop3;
     }
 
     server {
-        listen   993;
-        protocol imap;
+        resolver        1.1.1.1 1.0.0.1 8.8.8.8 8.8.4.4;
+        listen          993;
+        protocol        imap;
     }
+
+    server {
+        resolver        1.1.1.1 1.0.0.1 8.8.8.8 8.8.4.4;
+        listen          143;
+        protocol        imap;
+    }
+
+    server {
+        resolver        1.1.1.1 1.0.0.1 8.8.8.8 8.8.4.4;
+        listen          25;
+        protocol        smtp;
+        proxy_smtp_auth on;
+    }
+
+    server {
+        resolver        1.1.1.1 1.0.0.1 8.8.8.8 8.8.4.4;
+        listen          110;
+        protocol        pop3;
+    }
+
 }
