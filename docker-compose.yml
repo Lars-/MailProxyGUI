@@ -8,6 +8,7 @@ services:
     volumes:
       - ./templates:/etc/nginx/templates
       - ./web:/var/www/html
+      - ./cms:/var/www/cms
       - ${SSL_FOLDER}:/etc/nginx/ssl
     environment:
       - NGINX_ENVSUBST_OUTPUT_DIR=/etc/nginx/templates
@@ -19,7 +20,6 @@ services:
       - "995:995"
       - "587:587"
       - "8080:80"
-      - "8443:443"
     links:
       - php
     networks:
@@ -30,6 +30,7 @@ services:
     restart: unless-stopped
     volumes:
       - ./web:/var/www/html
+      - ./cms:/var/www/cms
     depends_on:
       - db
     links:
