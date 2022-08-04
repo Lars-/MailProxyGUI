@@ -4,3 +4,4 @@
 /templates/*.conf
 .env
 /web/data/db.sqlite
+/data/db/

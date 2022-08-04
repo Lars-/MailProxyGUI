@@ -1,7 +1,10 @@
 version: '3'
+networks:
+  ljpc_mailproxygui:
 services:
   proxy:
     build: ./proxy
+    restart: unless-stopped
     volumes:
       - ./templates:/etc/nginx/templates
       - ./web:/var/www/html
@@ -15,12 +18,32 @@ services:
       - "993:993"
       - "995:995"
       - "587:587"
-      - "80:80"
-      - "443:443"
+      - "8080:80"
+      - "8443:443"
     links:
       - php
+    networks:
+      - ljpc_mailproxygui
 
   php:
     build: ./php
+    restart: unless-stopped
     volumes:
       - ./web:/var/www/html
+    depends_on:
+      - db
+    links:
+      - db
+    networks:
+      - ljpc_mailproxygui
+
+  db:
+    build: ./db
+    restart: unless-stopped
+    volumes:
+      - ./data/db:/var/lib/mysql
+    environment:
+      - MARIADB_ROOT_PASSWORD=3h0aZvklAqkZgNmoubOfNb7p7PAID4CQ
+      - MARIADB_DATABASE=database
+    networks:
+      - ljpc_mailproxygui
