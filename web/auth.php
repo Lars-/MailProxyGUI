@@ -11,7 +11,6 @@ $headers = getallheaders();
 
 if ( ! isset( $headers['Auth-Protocol'] ) ) {
 	header( 'Auth-Status: No valid protocol specified' );
-	header( 'Auth-Wait: 3' );
 	exit;
 }
 
@@ -20,13 +19,11 @@ $password = $headers['Auth-Pass'];
 
 if ( empty( $email ) || empty( $password ) ) {
 	header( 'Auth-Status: Username and password can not be empty' );
-	header( 'Auth-Wait: 3' );
 	exit;
 }
 
 if ( filter_var( $email, FILTER_VALIDATE_EMAIL ) === false ) {
 	header( 'Auth-Status: Not a valid username' );
-	header( 'Auth-Wait: 3' );
 	exit;
 }
 $domain     = explode( '@', $email )[1];
@@ -61,7 +58,6 @@ if ( $serverId === null ) {
 $server = Database::instance()->getServer( $serverId );
 if ( ! is_array( $server ) ) {
 	header( 'Auth-Status: No valid server found' );
-	header( 'Auth-Wait: 3' );
 	exit;
 }
 
@@ -83,13 +79,11 @@ if ( $revalidate ) {
 		$mbox       = imap_open( $imapString, $email, $password, OP_READONLY );
 		if ( $mbox === false ) {
 			header( 'Auth-Status: Invalid credentials' );
-			header( 'Auth-Wait: 3' );
 			exit;
 		}
 		imap_close( $mbox );
 	} catch ( Exception $e ) {
 		header( 'Auth-Status: ' . $e->getMessage() );
-		header( 'Auth-Wait: 3' );
 		exit;
 	}
 	Database::instance()->insertOrUpdateUser( $email, $domainInfo['id'] );
