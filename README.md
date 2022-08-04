@@ -1,5 +1,7 @@
 # Mail Proxy GUI
 
+![Flowchart](repository/mailproxygui.png)
+
 Welcome to Mail Proxy GUI. This simple systems allows you to configure and use a mail proxy. This is helpful when you
 manage multiple servers, but want your clients to use one setting for incoming and outgoing mail.
 This whole project is made in about 2 days and probably is not super secure, but it is a good start.
@@ -43,4 +45,5 @@ project [here](https://www.buymeacoffee.com/Lars-).
 
 ## Screenshots
 
-![screenshot](repository/1.jpg)
+![Admin](repository/admin.jpg)
+![Configuration Thunderbird](repository/configuration-example.jpg)
