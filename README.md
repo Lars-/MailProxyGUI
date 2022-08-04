@@ -15,7 +15,8 @@ This whole project is made in about 2 days and probably is not super secure, but
 ## Installation
 
 Please install Docker and one of the latest versions of Docker Compose first.
-This system runs the best on a server that is dedicated for this task. **Do you want us to host it for you?** Please contact
+This system runs the best on a server that is dedicated for this task. **Do you want us to host it for you?** Please
+contact
 us at support@ljpc.nl. It won't cost more than €10 per month, depending on the amount of users you expect to connect.
 
 To install it on your server:
@@ -39,3 +40,7 @@ Please feel free to contribute to this project. This is a very basic project and
 
 If you like this project and want to support it, you can donate to the
 project [here](https://www.buymeacoffee.com/Lars-).
+
+## Screenshots
+
+![screenshot](repository/1.jpg)
