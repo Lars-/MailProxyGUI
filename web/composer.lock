@@ -4,8 +4,58 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d751713988987e9331980363e24189ce",
-    "packages": [],
+    "content-hash": "159d311e01cc4c90bb315cb9d8be801d",
+    "packages": [
+        {
+            "name": "ljpc/pure-php-doh-client",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/LJPc-solutions/Pure-PHP-DoH-Client.git",
+                "reference": "e655778c225b2812bcf64230907aea53a83debb0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/LJPc-solutions/Pure-PHP-DoH-Client/zipball/e655778c225b2812bcf64230907aea53a83debb0",
+                "reference": "e655778c225b2812bcf64230907aea53a83debb0",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "php": "^8.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "LJPc\\DoH\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "LJPc solutions",
+                    "email": "info@ljpc.nl",
+                    "homepage": "https://www.ljpc.solutions"
+                }
+            ],
+            "description": "Easily query DNS records via HTTPS",
+            "support": {
+                "email": "support@ljpc.nl",
+                "issues": "https://github.com/LJPc-solutions/Pure-PHP-DoH-Client/issues",
+                "source": "https://github.com/LJPc-solutions/Pure-PHP-DoH-Client"
+            },
+            "funding": [
+                {
+                    "url": "https://www.buymeacoffee.com/Lars-",
+                    "type": "buymeacoffee"
+                }
+            ],
+            "time": "2022-02-04T09:39:01+00:00"
+        }
+    ],
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",

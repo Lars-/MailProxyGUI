@@ -7,4 +7,5 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'LJPc\\MailProxyGui\\' => array($baseDir . '/src'),
+    'LJPc\\DoH\\' => array($vendorDir . '/ljpc/pure-php-doh-client/src'),
 );

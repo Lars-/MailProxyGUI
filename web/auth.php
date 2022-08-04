@@ -1,18 +1,16 @@
 <?php
 
+use LJPc\DoH\DNS;
+use LJPc\DoH\DNSType;
 use LJPc\MailProxyGui\Database;
 
 require __DIR__ . '/vendor/autoload.php';
-$db = new Database();
+$db = Database::instance();
 
 $headers = getallheaders();
 
-$serverMap = [
-
-];
-
 if ( ! isset( $headers['Auth-Protocol'] ) ) {
-	header( 'Auth-Status: Klopt niet' );
+	header( 'Auth-Status: No valid protocol specified' );
 	header( 'Auth-Wait: 3' );
 	exit;
 }
@@ -21,52 +19,87 @@ $email    = $headers['Auth-User'];
 $password = $headers['Auth-Pass'];
 
 if ( empty( $email ) || empty( $password ) ) {
-	header( 'Auth-Status: Ongeldige gegevens' );
+	header( 'Auth-Status: Username and password can not be empty' );
+	header( 'Auth-Wait: 3' );
 	exit;
 }
 
 if ( filter_var( $email, FILTER_VALIDATE_EMAIL ) === false ) {
-	header( 'Auth-Status: Geen geldig e-mailadres' );
+	header( 'Auth-Status: Not a valid username' );
+	header( 'Auth-Wait: 3' );
 	exit;
 }
-$domain = explode( '@', $email )[1];
+$domain     = explode( '@', $email )[1];
+$domainInfo = Database::instance()->getDomainInfo( $domain );
 
-$hostInfo = false;
-if ( $hostInfo === false ) {
-	$ipAddress = dns_get_record( 'mail.' . $domain, DNS_A );
-	if ( count( $ipAddress ) > 0 ) {
-		$hostInfo = $ipAddress[0]['ip'];
-		if ( ! in_array( $hostInfo, array_keys( $serverMap ) ) ) {
-			header( 'Auth-Status: Geen server gevonden' );
-			exit;
+$serverId = null;
+if ( $domainInfo !== null ) {
+	$serverId = $domainInfo['server'];
+}
+if ( $serverId === null ) {
+	$dnsKeys = Database::instance()->getOption( 'dns_keys' );
+	if ( ! is_array( $dnsKeys ) ) {
+		$dnsKeys = [ 'mail' ];
+	}
+	foreach ( $dnsKeys as $dnsKey ) {
+		$result  = DNS::query( "$dnsKey.$domain", DNSType::A() );
+		$answers = $result->getAnswers();
+
+		foreach ( $answers as $answer ) {
+			$ip       = $answer->value;
+			$serverId = Database::instance()->findServer( $ip );
+			if ( $serverId !== null ) {
+				break 2;
+			}
 		}
-		$hostInfo = $serverMap[ $hostInfo ];
-	} else {
-		header( 'Auth-Status: Geen server gevonden' );
-		exit;
+	}
+	if ( $serverId !== null ) {
+		Database::instance()->setDomain( $domain, $serverId );
 	}
 }
 
-$emailKnown = false;
-if ( $emailKnown === false ) {
+$server = Database::instance()->getServer( $serverId );
+if ( ! is_array( $server ) ) {
+	header( 'Auth-Status: No valid server found' );
+	header( 'Auth-Wait: 3' );
+	exit;
+}
+
+$userInfo   = Database::instance()->getUserInfo( $email );
+$revalidate = false;
+if ( ! is_array( $userInfo ) ) {
+	$revalidate = true;
+} else {
+	$lastVerified = DateTimeImmutable::createFromFormat( 'Y-m-d H:i:s', $userInfo['last_verified'] );
+	$now          = new DateTimeImmutable();
+	$diff         = $now->diff( $lastVerified );
+	if ( $diff->days > 7 ) {
+		$revalidate = true;
+	}
+}
+if ( $revalidate ) {
 	try {
-		$mbox = imap_open( "{" . $hostInfo . ":993/imap/ssl/novalidate-cert/notls}", $email, $password, OP_READONLY, 1 );
+		$imapString = "{" . $server['internal_imap_host'] . ":" . $server['internal_imap_port'] . $server['imap_test_extra_variables'] . '}';
+		$mbox       = imap_open( $imapString, $email, $password, OP_READONLY );
 		if ( $mbox === false ) {
-			header( 'Auth-Status: Ongeldige gegevens' );
+			header( 'Auth-Status: Invalid credentials' );
+			header( 'Auth-Wait: 3' );
 			exit;
 		}
 		imap_close( $mbox );
-
 	} catch ( Exception $e ) {
 		header( 'Auth-Status: ' . $e->getMessage() );
+		header( 'Auth-Wait: 3' );
 		exit;
 	}
+	Database::instance()->insertOrUpdateUser( $email, $domainInfo['id'] );
 }
 
 header( 'Auth-Status: OK' );
-header( 'Auth-Server: ' . $hostInfo );
 if ( $headers['Auth-Protocol'] === 'imap' ) {
-	header( 'Auth-Port: 143' );
+	header( 'Auth-Server: ' . $server['internal_imap_host'] );
+	header( 'Auth-Port: ' . $server['internal_imap_port'] );
 } else {
-	header( 'Auth-Port: 25' );
+	header( 'Auth-Server: ' . $server['internal_smtp_host'] );
+	header( 'Auth-Port: ' . $server['internal_smtp_port'] );
 }

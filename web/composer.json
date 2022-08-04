@@ -3,5 +3,8 @@
     "psr-4": {
       "LJPc\\MailProxyGui\\": "src"
     }
+  },
+  "require": {
+    "ljpc/pure-php-doh-client": "^1.0"
   }
 }

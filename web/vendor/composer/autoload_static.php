@@ -10,6 +10,7 @@ class ComposerStaticInite8afbf63fa46405aada744d0d51dd27b
         'L' => 
         array (
             'LJPc\\MailProxyGui\\' => 18,
+            'LJPc\\DoH\\' => 9,
         ),
     );
 
@@ -17,6 +18,10 @@ class ComposerStaticInite8afbf63fa46405aada744d0d51dd27b
         'LJPc\\MailProxyGui\\' => 
         array (
             0 => __DIR__ . '/../..' . '/src',
+        ),
+        'LJPc\\DoH\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/ljpc/pure-php-doh-client/src',
         ),
     );
 
