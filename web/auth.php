@@ -52,6 +52,7 @@ if ( $serverId === null ) {
 	}
 	if ( $serverId !== null ) {
 		Database::instance()->setDomain( $domain, $serverId );
+		$domainInfo = Database::instance()->getDomainInfo( $domain );
 	}
 }
 
