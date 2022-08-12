@@ -1,0 +1,34 @@
+{
+  "name": "ljpc/pure-php-doh-client",
+  "description": "Easily query DNS records via HTTPS",
+  "type": "library",
+  "autoload": {
+    "psr-4": {
+      "LJPc\\DoH\\": "src/"
+    }
+  },
+  "authors": [
+    {
+      "name": "LJPc solutions",
+      "email": "info@ljpc.nl",
+      "homepage": "https://www.ljpc.solutions"
+    }
+  ],
+  "support": {
+    "email": "support@ljpc.nl",
+    "source": "https://github.com/LJPc-solutions/Pure-PHP-DoH-Client"
+  },
+  "funding": [
+    {
+      "type": "buymeacoffee",
+      "url": "https://www.buymeacoffee.com/Lars-"
+    }
+  ],
+  "license": [
+    "GPL-3.0-or-later"
+  ],
+  "require": {
+    "php": "^8.0",
+    "ext-curl": "*"
+  }
+}
